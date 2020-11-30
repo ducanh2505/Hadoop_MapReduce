@@ -12,6 +12,8 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
+
 public class NumOfShared
 {
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable>
@@ -21,11 +23,12 @@ public class NumOfShared
         public void map(LongWritable key, Text value, Context context) throws IOException,InterruptedException
         {
             StringTokenizer tokens = new StringTokenizer(value.toString(), ",");
-			
+
+			// Bo qua token dau tien (UserID)
 			tokens.nextToken();
-			TrackId.set(tokens.nextToken().trim() + ",");
+			// Token thu 2 3 la TrackID va so luot share (shared)
+            TrackId.set(tokens.nextToken().trim() + ",");
 			int shared = Integer.parseInt(tokens.nextToken().trim());
-					
 			context.write(TrackId, new IntWritable(shared));
         }
     }
@@ -38,12 +41,14 @@ public class NumOfShared
 		
             for(IntWritable value:values)
             {
+                // Tinh tong so luot Share (shared) cua moi trackID
 				count = count + value.get();
             }
 			
 			context.write(key, new IntWritable(count));
         }
     }
+
     public static void main(String[] args) throws Exception
     {
         Configuration conf = new Configuration();

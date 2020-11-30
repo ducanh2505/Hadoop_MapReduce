@@ -13,6 +13,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
 public class NumOfSkipOnRadio
 {
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable>
@@ -22,13 +23,14 @@ public class NumOfSkipOnRadio
         public void map(LongWritable key, Text value, Context context) throws IOException,InterruptedException
         {
             StringTokenizer tokens = new StringTokenizer(value.toString(), ",");
-			
+			// bo qua token dau tien
 			tokens.nextToken();
 			TrackId.set(tokens.nextToken().trim() + ",");
+            // bo qua token thu 3 va 4
 			tokens.nextToken();
 			tokens.nextToken();
 			int skipped = Integer.parseInt(tokens.nextToken().trim());
-					
+
 			context.write(TrackId, new IntWritable(skipped));
         }
     }

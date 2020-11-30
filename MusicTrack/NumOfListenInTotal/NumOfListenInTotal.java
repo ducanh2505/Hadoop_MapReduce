@@ -13,6 +13,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
 public class NumOfListenInTotal
 {
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable>
@@ -21,11 +22,12 @@ public class NumOfListenInTotal
 		
         public void map(LongWritable key, Text value, Context context) throws IOException,InterruptedException
         {
+            // Tach token theo dau ,
             StringTokenizer tokens = new StringTokenizer(value.toString(), ",");
-			
+			// gan UserID va Track ID la 2 token dau tien
 			int UserId = Integer.parseInt(tokens.nextToken().trim());
 			TrackId.set(tokens.nextToken().trim() + ",");
-					
+            // return UserID va TrackID
 			context.write(TrackId, new IntWritable(UserId));
         }
     }
@@ -38,12 +40,13 @@ public class NumOfListenInTotal
 		
             for(IntWritable value:values)
             {
+                // Tinh tong so luot nghe cua bai hat (UserId)
 				count = count + 1;
             }
-			
 			context.write(key, new IntWritable(count));
         }
     }
+
     public static void main(String[] args) throws Exception
     {
         Configuration conf = new Configuration();

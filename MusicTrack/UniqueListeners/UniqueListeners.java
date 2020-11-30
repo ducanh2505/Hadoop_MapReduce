@@ -14,6 +14,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
 public class UniqueListeners
 {
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable>
@@ -22,11 +23,11 @@ public class UniqueListeners
 		
         public void map(LongWritable key, Text value, Context context) throws IOException,InterruptedException
         {
+            // Tach Token theo dau ,
             StringTokenizer tokens = new StringTokenizer(value.toString(), ",");
-			
+			// Lay 2 token dau tien (trackID va UserID)
 			int UserId = Integer.parseInt(tokens.nextToken().trim());
 			TrackId.set(tokens.nextToken().trim() + ",");
-					
 			context.write(TrackId, new IntWritable(UserId));
         }
     }
@@ -39,12 +40,14 @@ public class UniqueListeners
 		
             for(IntWritable value:values)
             {
+                // Add userId vao Set
 				UserIdSet.add(value.get());
             }
-			
+			// Return size of Set
 			context.write(key, new IntWritable(UserIdSet.size()));
         }
     }
+    
     public static void main(String[] args) throws Exception
     {
         Configuration conf = new Configuration();
